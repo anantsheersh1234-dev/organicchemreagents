@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reagent Atlas — Organic Chemistry for JEE</title>
+<style>
+:root{
+  --bg:#f2f5fc; --surface:#ffffff; --primary:#5b7cfa; --primary-dark:#3f5fe0;
+  --green:#3fb087; --red:#e8604c; --yellow:#f0a93e; --purple:#9b7bf0; --teal:#3eb6c7;
+  --text:#2b2d42; --text-soft:#6b7089; --line:#e7ebf5; --radius:20px; --radius-sm:12px;
+  --shadow:0 2px 14px rgba(60,70,120,.08); --shadow-hover:0 10px 30px rgba(60,70,120,.14);
+  --blue:#4f7cff;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; font-family:'Segoe UI',Inter,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:linear-gradient(180deg,#eef2fb,#f6f8fd 400px); color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Segoe UI',Inter,sans-serif; margin:0; letter-spacing:-.3px;}
+.app{display:flex; min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--line);
+  position:sticky; top:0; height:100vh; overflow-y:auto; padding:22px 16px; z-index:30;
+}
+.brand{display:flex; align-items:center; gap:10px; padding:4px 8px 20px;}
+.brand .logo{
+  width:38px;height:38px;border-radius:12px; background:linear-gradient(135deg,var(--primary),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:20px;color:white; box-shadow:var(--shadow);
+}
+.brand span{font-weight:700; font-size:16px;}
+.brand small{display:block; font-weight:400; color:var(--text-soft); font-size:11px;}
+.nav-group{margin-bottom:6px;}
+.nav-link{
+  display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:var(--radius-sm);
+  color:var(--text-soft); text-decoration:none; font-size:14px; font-weight:500; margin-bottom:2px;
+  transition:.2s;
+}
+.nav-link:hover{background:#f0f3fd; color:var(--primary-dark);}
+.nav-link.active{background:linear-gradient(135deg,#eef2ff,#e6ecff); color:var(--primary-dark); font-weight:700;}
+.nav-link .dot{width:8px;height:8px;border-radius:50%; flex-shrink:0;}
+.sidebar-foot{margin-top:24px; padding:14px; background:#f6f8fe; border-radius:16px; font-size:12px; color:var(--text-soft); line-height:1.5;}
+
+/* MAIN */
+.content{flex:1; min-width:0;}
+.topbar{
+  position:sticky; top:0; z-index:20; background:rgba(246,248,253,.85); backdrop-filter:blur(10px);
+  padding:16px 34px; display:flex; align-items:center; gap:16px; border-bottom:1px solid var(--line);
+}
+.menu-btn{display:none; background:var(--surface); border:1px solid var(--line); border-radius:10px; width:38px;height:38px; font-size:18px; cursor:pointer;}
+.search-wrap{flex:1; max-width:560px; position:relative;}
+.search-wrap input{
+  width:100%; padding:12px 16px 12px 42px; border-radius:16px; border:1px solid var(--line);
+  background:var(--surface); font-size:14px; outline:none; transition:.2s; box-shadow:var(--shadow);
+}
+.search-wrap input:focus{box-shadow:0 0 0 4px #dde6ff;}
+.search-wrap .ico{position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:.5;}
+.no-results{display:none; text-align:center; color:var(--text-soft); padding:40px; font-size:14px;}
+
+.hero{padding:48px 34px 10px; max-width:980px;}
+.hero h1{font-size:34px; background:linear-gradient(135deg,var(--primary-dark),var(--purple)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.hero p{color:var(--text-soft); font-size:15.5px; margin-top:10px; line-height:1.7; max-width:720px;}
+.legend{display:flex; gap:18px; margin-top:18px; flex-wrap:wrap;}
+.legend span{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-soft); background:var(--surface); padding:6px 12px; border-radius:20px; box-shadow:var(--shadow);}
+.legend i{width:16px; height:3px; border-radius:3px; display:inline-block;}
+
+section.block{padding:26px 34px 10px;}
+.block-head{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+.block-head .ic{width:42px;height:42px;border-radius:14px; display:flex;align-items:center;justify-content:center; font-size:20px; color:#fff; box-shadow:var(--shadow);}
+.block-head h2{font-size:21px;}
+.block-head p{margin:2px 0 0; color:var(--text-soft); font-size:13px;}
+
+/* CARD */
+.grid{display:flex; flex-direction:column; gap:16px;}
+.card{
+  background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow);
+  border:1px solid var(--line); overflow:hidden; transition:box-shadow .25s, transform .25s;
+}
+.card:hover{box-shadow:var(--shadow-hover);}
+.card-head{display:flex; align-items:center; gap:14px; padding:18px 22px; cursor:pointer; user-select:none;}
+.card-head .formula{
+  font-weight:700; font-size:16px; min-width:150px; color:var(--text);
+}
+.card-head .name{color:var(--text-soft); font-size:13px;}
+.card-head .tag{
+  margin-left:auto; font-size:11px; font-weight:700; padding:5px 12px; border-radius:20px; color:#fff; white-space:nowrap;
+}
+.chev{transition:transform .3s; color:var(--text-soft); flex-shrink:0;}
+.card.open .chev{transform:rotate(180deg);}
+.wrap{display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s ease;}
+.card.open .wrap{grid-template-rows:1fr;}
+.wrap-inner{overflow:hidden;}
+.card-body{padding:0 22px 24px; border-top:1px solid var(--line); margin-top:2px;}
+.sub-title{font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--primary-dark); margin:18px 0 10px;}
+ul.uses{margin:0; padding-left:20px; color:var(--text); font-size:14px; line-height:1.9;}
+ul.uses li::marker{color:var(--primary);}
+
+/* reaction row */
+.rxn-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:#f8f9fe; border-radius:14px; padding:14px 16px; margin-bottom:10px;}
+.rxn-box{background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:8px 14px; font-size:14.5px; font-weight:600; white-space:nowrap;}
+.rxn-arrow{display:flex; flex-direction:column; align-items:center; min-width:70px;}
+.rxn-arrow .top{font-size:10.5px; color:var(--primary-dark); font-weight:700;}
+.rxn-arrow .bottom{font-size:10px; color:var(--text-soft);}
+.rxn-arrow svg{width:56px; height:12px;}
+.plus{font-size:16px; color:var(--text-soft); font-weight:700;}
+
+/* mechanism */
+.mech-strip{display:flex; align-items:stretch; gap:8px; overflow-x:auto; padding:10px 4px 16px;}
+.mech-frame{flex:0 0 auto; background:#fbfbff; border:1px solid var(--line); border-radius:16px; padding:10px; text-align:center; min-width:230px;}
+.mech-frame svg{display:block; margin:0 auto;}
+.mech-caption{font-size:11.5px; color:var(--text-soft); margin-top:6px; max-width:220px;}
+.mech-sep{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--primary-dark); font-size:20px; min-width:50px;}
+.mech-sep .lbl{font-size:10px; color:var(--text-soft); margin-top:2px; white-space:nowrap;}
+
+.note{background:#fff7e9; border:1px solid #f4e2bb; color:#8a6a1f; font-size:12.5px; padding:10px 14px; border-radius:12px; margin-top:12px;}
+
+/* TABLE */
+.table-wrap{background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; border:1px solid var(--line);}
+table{width:100%; border-collapse:collapse; font-size:13.5px;}
+th{text-align:left; padding:14px 18px; background:#f3f5fd; color:var(--primary-dark); font-size:12px; text-transform:uppercase; letter-spacing:.5px; position:sticky; top:64px;}
+td{padding:12px 18px; border-top:1px solid var(--line); vertical-align:top;}
+tr:hover td{background:#f8faff;}
+
+.fab{position:fixed; bottom:26px; right:26px; width:48px;height:48px;border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center;justify-content:center; box-shadow:var(--shadow-hover); cursor:pointer; opacity:0; pointer-events:none; transition:.3s; font-size:20px; z-index:40;}
+.fab.show{opacity:1; pointer-events:auto;}
+
+footer{padding:40px 34px; text-align:center; color:var(--text-soft); font-size:12.5px;}
+
+@media(max-width:880px){
+  .sidebar{position:fixed; left:-280px; top:0; transition:.3s; box-shadow:var(--shadow-hover);}
+  .sidebar.show{left:0;}
+  .menu-btn{display:block;}
+  .hero, section.block, .topbar{padding-left:18px; padding-right:18px;}
+  th{position:static;}
+}
+</style>
+</head>
+<body>
+
+<!-- global marker defs reused by every inline mechanism svg -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<marker id="arrowRed" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e8604c"/></marker>
+<marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#4f7cff"/></marker>
+</defs>
+</svg>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="logo">⚗️</div><div><span>Reagent Atlas</span><small>JEE Organic Chemistry</small></div></div>
+    <nav id="navlinks">
+      <div class="nav-link" data-target="home"><span class="dot" style="background:#5b7cfa"></span>Home</div>
+      <div class="nav-link" data-target="organometallic"><span class="dot" style="background:#9b7bf0"></span>Organometallic</div>
+      <div class="nav-link" data-target="reduction"><span class="dot" style="background:#3fb087"></span>Reduction</div>
+      <div class="nav-link" data-target="oxidation"><span class="dot" style="background:#e8604c"></span>Oxidation</div>
+      <div class="nav-link" data-target="substitution"><span class="dot" style="background:#3eb6c7"></span>Substitution</div>
+      <div class="nav-link" data-target="elimination"><span class="dot" style="background:#4f7cff"></span>Elimination</div>
+      <div class="nav-link" data-target="condensation"><span class="dot" style="background:#f0a93e"></span>Name Reactions</div>
+      <div class="nav-link" data-target="tests"><span class="dot" style="background:#9b7bf0"></span>Identification Tests</div>
+      <div class="nav-link" data-target="revision"><span class="dot" style="background:#3fb087"></span>Quick Revision Table</div>
+    </nav>
+    <div class="sidebar-foot">💡 Click any reagent card to expand its uses, drawn mechanism &amp; example reactions.</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="content">
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn">☰</button>
+      <div class="search-wrap">
+        <span class="ico">🔍</span>
+        <input id="searchInput" type="text" placeholder="Search a reagent, formula or reaction… e.g. Grignard, LiAlH4, Aldol">
+      </div>
+    </div>
+
+    <div class="hero" id="home">
+      <h1>Every Reagent. One Calm Page.</h1>
+      <p>A soft, student-friendly map of all reagents used in Class 12 Organic Chemistry — their uses, drawn electron-pushing mechanisms, and the reactions JEE loves to ask. Click a card to expand it.</p>
+      <div class="legend">
+        <span><i style="background:#e8604c"></i>Red curved arrow = electron pair movement</span>
+        <span><i style="background:#4f7cff"></i>Blue curved arrow = proton transfer</span>
+        <span>🖱️ Click cards to expand mechanism</span>
+      </div>
+    </div>
+
+    <!-- ========================= ORGANOMETALLIC ========================= -->
+    <section class="block" id="organometallic" data-sec>
+      <div class="block-head"><div class="ic" style="background:#9b7bf0">🧲</div><div><h2>Organometallic Reagents</h2><p>Carbon nucleophiles that build C–C bonds</p></div></div>
+      <div class="grid">
+
+        <!-- GRIGNARD -->
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">R–MgX</div><div class="name">Grignard Reagent</div></div>
+            <div class="tag" style="background:#9b7bf0">Addition</div>
+            <div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <div class="sub-title">Prepared From</div>
+            <div class="rxn-row"><div class="rxn-box">R–X</div><div class="rxn-arrow"><div class="top">Mg, dry ether</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke="#2b2d42" stroke-width="2" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">R–MgX</div></div>
+            <div class="sub-title">Uses</div>
+            <ul class="uses">
+              <li>HCHO → 1° alcohol; other aldehydes → 2° alcohol; ketones → 3° alcohol</li>
+              <li>CO₂ (dry ice) → carboxylic acid on hydrolysis</li>
+              <li>Esters (2 eq.) → 3° alcohol; Nitriles → ketone after hydrolysis</li>
+              <li>Destroyed instantly by acidic H (H₂O, ROH, –NH, terminal alkyne)</li>
+            </ul>
+            <div class="sub-title">Drawn Mechanism — Nucleophilic Addition to Carbonyl</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="10" y="100" font-size="15" fill="#2b2d42" font-family="monospace">H₃C–MgBr</text>
+                  <line x1="150" y1="85" x2="112" y2="112" stroke="#2b2d42" stroke-width="1.8"/><text x="90" y="128" font-size="14">H₃C</text>
+                  <line x1="150" y1="85" x2="195" y2="100" stroke="#2b2d42" stroke-width="1.8"/><text x="200" y="104" font-size="14">H</text>
+                  <line x1="150" y1="85" x2="150" y2="40" stroke="#2b2d42" stroke-width="1.8"/>
+                  <line x1="144" y1="85" x2="144" y2="42" stroke="#2b2d42" stroke-width="1.8"/>
+                  <text x="146" y="30" font-size="15">O</text>
+                  <circle cx="130" cy="24" r="1.6" fill="#2b2d42"/><circle cx="135" cy="24" r="1.6" fill="#2b2d42"/>
+                  <text x="165" y="28" font-size="11" fill="#4f7cff">δ−</text>
+                  <text x="160" y="90" font-size="11" fill="#e8604c">δ+</text>
+                  <path d="M60,95 Q95,60 140,83" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M148,68 Q162,52 149,42" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">CH₃ of Grignard attacks the electrophilic carbonyl carbon; the C=O π electrons shift onto oxygen.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">forms alkoxide</span></div>
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <line x1="120" y1="85" x2="70" y2="55" stroke="#2b2d42" stroke-width="1.8"/><text x="38" y="52" font-size="14">CH₃</text>
+                  <line x1="120" y1="85" x2="70" y2="115" stroke="#2b2d42" stroke-width="1.8"/><text x="38" y="120" font-size="14">CH₃</text>
+                  <line x1="120" y1="85" x2="170" y2="115" stroke="#2b2d42" stroke-width="1.8"/><text x="175" y="120" font-size="14">H</text>
+                  <line x1="120" y1="85" x2="120" y2="38" stroke="#2b2d42" stroke-width="1.8"/>
+                  <text x="112" y="28" font-size="14">O–MgBr</text>
+                  <circle cx="100" cy="22" r="1.6" fill="#2b2d42"/><circle cx="105" cy="22" r="1.6" fill="#2b2d42"/>
+                </svg>
+                <div class="mech-caption">Magnesium alkoxide intermediate (tetrahedral carbon).</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">H₃O⁺ workup</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;">
+                <div style="font-weight:700; font-size:16px;">(CH₃)₂CH–OH<br><span style="font-weight:400;font-size:11px;color:#6b7089">propan-2-ol</span></div>
+              </div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <!-- WITTIG -->
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">Ph₃P=CHR</div><div class="name">Wittig Reagent (Ylide)</div></div>
+            <div class="tag" style="background:#9b7bf0">Olefination</div>
+            <div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <div class="sub-title">Uses</div>
+            <ul class="uses"><li>Converts aldehydes/ketones into alkenes with a predictable double-bond position</li><li>Avoids carbocation rearrangements seen in other alkene-forming routes</li></ul>
+            <div class="sub-title">Drawn Mechanism</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="10" y="90" font-size="14" font-family="monospace">Ph₃P=CH₂</text>
+                  <text x="150" y="50" font-size="14">O</text>
+                  <line x1="150" y1="90" x2="150" y2="58" stroke="#2b2d42" stroke-width="1.8"/>
+                  <line x1="144" y1="90" x2="144" y2="58" stroke="#2b2d42" stroke-width="1.8"/>
+                  <line x1="150" y1="90" x2="195" y2="110" stroke="#2b2d42" stroke-width="1.8"/><text x="198" y="115" font-size="13">R</text>
+                  <line x1="150" y1="90" x2="105" y2="110" stroke="#2b2d42" stroke-width="1.8"/><text x="80" y="115" font-size="13">R'</text>
+                  <path d="M65,80 Q95,55 140,85" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M147,75 Q160,60 150,55" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Ylide carbanion attacks carbonyl carbon → forms 4-membered oxaphosphetane ring.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">retro [2+2]</span></div>
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <rect x="90" y="50" width="60" height="45" fill="none" stroke="#2b2d42" stroke-dasharray="3,3"/>
+                  <text x="95" y="45" font-size="13">O</text><text x="150" y="45" font-size="13">PPh₃</text>
+                  <text x="95" y="112" font-size="13">R'</text><text x="150" y="112" font-size="13">R</text>
+                  <path d="M100,60 Q90,75 100,88" stroke="#e8604c" stroke-width="2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M140,60 Q150,75 140,88" stroke="#e8604c" stroke-width="2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Ring collapses: forms strong P=O bond + new C=C alkene bond.</div>
+              </div>
+              <div class="mech-sep">➜</div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;">
+                <div style="font-weight:700;">R'RC=CH₂ + Ph₃P=O</div>
+              </div>
+            </div>
+          </div></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================= REDUCTION ========================= -->
+    <section class="block" id="reduction" data-sec>
+      <div class="block-head"><div class="ic" style="background:#3fb087">🔽</div><div><h2>Reducing Agents</h2><p>Hydride donors &amp; deoxygenation reagents</p></div></div>
+      <div class="grid">
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">LiAlH₄</div><div class="name">Lithium Aluminium Hydride</div></div>
+            <div class="tag" style="background:#3fb087">Reduction</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <div class="sub-title">Uses</div>
+            <ul class="uses">
+              <li>Strong hydride donor — reduces acids, esters, amides, nitriles, aldehydes & ketones to alcohols/amines</li>
+              <li>Does <b>not</b> reduce isolated C=C bonds</li>
+              <li>Reacts violently with water/protic solvents — used in dry ether</li>
+            </ul>
+            <div class="sub-title">Example Reactions</div>
+            <div class="rxn-row"><div class="rxn-box">RCOOH</div><div class="rxn-arrow"><div class="top">LiAlH₄</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">RCH₂OH</div></div>
+            <div class="rxn-row"><div class="rxn-box">RCN</div><div class="rxn-arrow"><div class="top">LiAlH₄</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">RCH₂NH₂</div></div>
+            <div class="sub-title">Drawn Mechanism — Hydride Addition</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="20" y="95" font-size="15" font-family="monospace">AlH₄⁻</text>
+                  <line x1="150" y1="85" x2="112" y2="112" stroke="#2b2d42" stroke-width="1.8"/><text x="90" y="128" font-size="14">R</text>
+                  <line x1="150" y1="85" x2="195" y2="100" stroke="#2b2d42" stroke-width="1.8"/><text x="200" y="104" font-size="14">H</text>
+                  <line x1="150" y1="85" x2="150" y2="40" stroke="#2b2d42" stroke-width="1.8"/>
+                  <line x1="144" y1="85" x2="144" y2="42" stroke="#2b2d42" stroke-width="1.8"/>
+                  <text x="146" y="30" font-size="15">O</text>
+                  <text x="160" y="90" font-size="11" fill="#e8604c">δ+</text>
+                  <path d="M55,90 Q90,60 140,83" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M148,68 Q162,52 149,42" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Hydride (H⁻) attacks carbonyl carbon; π-bond electrons shift to O forming alkoxide.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">H₃O⁺ workup</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;">R–CH₂–OH</div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">NaBH₄</div><div class="name">Sodium Borohydride</div></div>
+            <div class="tag" style="background:#3fb087">Reduction</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <div class="sub-title">Uses</div>
+            <ul class="uses"><li>Milder than LiAlH₄ — reduces only aldehydes &amp; ketones to alcohols</li><li>Does not reduce esters, acids, amides or nitriles</li><li>Safe to use even in ethanol/water (selective & controllable)</li></ul>
+            <div class="sub-title">Example Reactions</div>
+            <div class="rxn-row"><div class="rxn-box">CH₃COCH₃</div><div class="rxn-arrow"><div class="top">NaBH₄, EtOH</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">(CH₃)₂CHOH</div></div>
+            <div class="note">Mechanism identical to LiAlH₄ (hydride delivery to carbonyl carbon) — just with BH₄⁻ instead of AlH₄⁻, and much lower reactivity toward C=O π-bond polarisation beyond aldehydes/ketones.</div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">DIBAL-H</div><div class="name">Diisobutylaluminium Hydride</div></div>
+            <div class="tag" style="background:#3fb087">Partial Reduction</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <div class="sub-title">Uses</div>
+            <ul class="uses"><li>At −78°C (toluene), stops reduction of esters/nitriles at the <b>aldehyde</b> stage</li><li>Prevents over-reduction to alcohol because tetrahedral intermediate is stable until aqueous workup</li></ul>
+            <div class="sub-title">Drawn Mechanism</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="12" y="95" font-size="14" font-family="monospace">DIBAL–H</text>
+                  <line x1="150" y1="85" x2="112" y2="112" stroke="#2b2d42" stroke-width="1.8"/><text x="90" y="128" font-size="14">R</text>
+                  <line x1="150" y1="85" x2="195" y2="100" stroke="#2b2d42" stroke-width="1.8"/><text x="198" y="104" font-size="14">OR'</text>
+                  <line x1="150" y1="85" x2="150" y2="40" stroke="#2b2d42" stroke-width="1.8"/>
+                  <line x1="144" y1="85" x2="144" y2="42" stroke="#2b2d42" stroke-width="1.8"/>
+                  <text x="146" y="30" font-size="15">O</text>
+                  <path d="M55,90 Q90,60 140,83" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M148,68 Q162,52 149,42" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Hydride adds once to ester carbonyl; Al chelates O forming a stable tetrahedral intermediate at −78°C.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">H₂O, warm</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;">R–CHO <span style="color:#6b7089;font-weight:400;font-size:11px">(aldehyde, not alcohol)</span></div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">Zn-Hg / conc. HCl</div><div class="name">Clemmensen Reduction</div></div>
+            <div class="tag" style="background:#3fb087">C=O → CH₂</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <div class="sub-title">Uses</div><ul class="uses"><li>Reduces aldehyde/ketone carbonyl directly to CH₂ — used for <b>acid-stable, base-sensitive</b> substrates</li></ul>
+            <div class="rxn-row"><div class="rxn-box">C₆H₅COCH₃</div><div class="rxn-arrow"><div class="top">Zn-Hg/HCl</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">C₆H₅CH₂CH₃</div></div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">NH₂NH₂ / KOH</div><div class="name">Wolff–Kishner Reduction</div></div>
+            <div class="tag" style="background:#3fb087">C=O → CH₂</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <div class="sub-title">Uses</div><ul class="uses"><li>Reduces C=O to CH₂ via hydrazone intermediate — used for <b>base-stable, acid-sensitive</b> substrates (in ethylene glycol, heat)</li></ul>
+            <div class="rxn-row"><div class="rxn-box">R₂C=O</div><div class="rxn-arrow"><div class="top">NH₂NH₂</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">R₂C=N–NH₂</div><div class="rxn-arrow"><div class="top">KOH, Δ, −N₂</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">R₂CH₂</div></div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">H₂ / Pd, Pt, Ni</div><div class="name">Catalytic Hydrogenation</div></div>
+            <div class="tag" style="background:#3fb087">Addition</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <div class="sub-title">Uses</div>
+            <ul class="uses"><li>Adds H₂ across C=C / C≡C (syn addition) to give alkane</li><li><b>Lindlar's catalyst</b> (Pd/BaSO₄ + quinoline) stops alkyne reduction at the <i>cis</i>-alkene stage</li></ul>
+            <div class="rxn-row"><div class="rxn-box">RC≡CR</div><div class="rxn-arrow"><div class="top">H₂, Lindlar</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">cis-RCH=CHR</div></div>
+          </div></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================= OXIDATION ========================= -->
+    <section class="block" id="oxidation" data-sec>
+      <div class="block-head"><div class="ic" style="background:#e8604c">🔥</div><div><h2>Oxidising Agents</h2><p>Electron-withdrawing / bond-cleaving reagents</p></div></div>
+      <div class="grid">
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">KMnO₄</div><div class="name">Potassium Permanganate</div></div>
+            <div class="tag" style="background:#e8604c">Oxidation</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses">
+              <li>Cold, dilute, alkaline (Baeyer's reagent): alkene → <i>vic</i>-diol</li>
+              <li>Hot, concentrated: alkene → cleaved to acids/ketones</li>
+              <li>Alkylbenzenes (with benzylic H) → benzoic acid, regardless of chain length</li>
+              <li>1° alcohol → carboxylic acid; 2° alcohol → ketone</li>
+            </ul>
+            <div class="rxn-row"><div class="rxn-box">C₆H₅CH₂CH₃</div><div class="rxn-arrow"><div class="top">KMnO₄/H⁺,Δ</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">C₆H₅COOH</div></div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">K₂Cr₂O₇ / CrO₃</div><div class="name">Jones Reagent</div></div>
+            <div class="tag" style="background:#e8604c">Oxidation</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>1° alcohol → carboxylic acid (via aldehyde); 2° alcohol → ketone; 3° alcohol unaffected</li></ul>
+            <div class="rxn-row"><div class="rxn-box">RCH₂OH</div><div class="rxn-arrow"><div class="top">K₂Cr₂O₇/H⁺</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">RCOOH</div></div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">PCC</div><div class="name">Pyridinium Chlorochromate</div></div>
+            <div class="tag" style="background:#e8604c">Mild Oxidation</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Anhydrous, mild — stops 1° alcohol oxidation exactly at the <b>aldehyde</b> stage</li></ul>
+            <div class="rxn-row"><div class="rxn-box">RCH₂OH</div><div class="rxn-arrow"><div class="top">PCC, CH₂Cl₂</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">RCHO</div></div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">O₃ / Zn, H₂O</div><div class="name">Ozonolysis</div></div>
+            <div class="tag" style="background:#e8604c">Bond Cleavage</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Cleaves C=C bonds into two carbonyl compounds</li><li>Reductive workup (Zn/H₂O or Me₂S) avoids over-oxidation to acids</li></ul>
+            <div class="sub-title">Drawn Mechanism</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <line x1="80" y1="90" x2="140" y2="90" stroke="#2b2d42" stroke-width="2.4"/>
+                  <text x="60" y="95" font-size="14">R₂C</text><text x="150" y="95" font-size="14">CR₂</text>
+                  <text x="110" y="40" font-size="14">O</text><circle cx="95" cy="55" r="18" fill="none" stroke="#2b2d42" stroke-dasharray="2,3"/>
+                  <text x="78" y="60" font-size="13">O</text><text x="130" y="60" font-size="13">O</text>
+                  <path d="M85,85 Q95,65 105,55" stroke="#e8604c" stroke-width="2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M130,85 Q120,65 112,52" stroke="#e8604c" stroke-width="2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">O₃ undergoes 1,3-dipolar cycloaddition across C=C → molozonide, which rearranges to the ozonide.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">Zn/H₂O</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;">R₂C=O + O=CR₂</div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================= SUBSTITUTION ========================= -->
+    <section class="block" id="substitution" data-sec>
+      <div class="block-head"><div class="ic" style="background:#3eb6c7">🔄</div><div><h2>Substitution Reagents</h2><p>Replacing –OH, –H with halogens</p></div></div>
+      <div class="grid">
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">SOCl₂</div><div class="name">Thionyl Chloride</div></div>
+            <div class="tag" style="background:#3eb6c7">SNi</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Converts alcohols → alkyl chlorides cleanly (by-products SO₂ & HCl are gases — purest method)</li></ul>
+            <div class="sub-title">Drawn Mechanism (SNi)</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="20" y="95" font-size="14">R–OH</text>
+                  <text x="130" y="60" font-size="14">Cl–S(=O)–Cl</text>
+                  <path d="M65,90 Q95,70 128,66" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M160,60 Q175,50 190,58" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <text x="190" y="50" font-size="12" fill="#e8604c">Cl⁻ leaves</text>
+                </svg>
+                <div class="mech-caption">O of alcohol attacks S, displacing Cl⁻; forms chlorosulfite ester R–O–SOCl + HCl.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">internal attack</span></div>
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="60" y="80" font-size="14">R–O–S(=O)Cl</text>
+                  <path d="M160,85 Q190,60 150,40" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <text x="30" y="110" font-size="11" fill="#6b7089">Cl⁻ (ion pair) attacks same carbon from front face (retention)</text>
+                </svg>
+                <div class="mech-caption">Cl⁻ released attacks the same carbon intramolecularly — releasing SO₂.</div>
+              </div>
+              <div class="mech-sep">➜</div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;">R–Cl + SO₂↑</div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">PCl₅ / PCl₃</div><div class="name">Phosphorus Halides</div></div>
+            <div class="tag" style="background:#3eb6c7">Substitution</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Converts –OH (alcohols/acids) → –Cl</li></ul>
+            <div class="rxn-row"><div class="rxn-box">RCOOH</div><div class="rxn-arrow"><div class="top">PCl₅</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">RCOCl</div></div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">X₂ / Red P</div><div class="name">Hell–Volhard–Zelinsky (HVZ)</div></div>
+            <div class="tag" style="background:#3eb6c7">α-Halogenation</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>α-halogenates carboxylic acids bearing α-H, via the acid bromide/enol pathway</li></ul>
+            <div class="sub-title">Drawn Mechanism</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="30" y="90" font-size="14">Enol form</text>
+                  <line x1="90" y1="85" x2="140" y2="85" stroke="#2b2d42" stroke-width="2.2"/>
+                  <text x="60" y="90" font-size="13">C</text><text x="150" y="90" font-size="13">C–OH</text>
+                  <text x="175" y="55" font-size="13">Br–Br</text>
+                  <path d="M95,80 Q140,55 175,60" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M198,58 Q215,45 225,55" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Acid is converted (via red P) to its enol form, which attacks Br₂ like a nucleophilic alkene.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">−H⁺</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;">R–CHBr–COOH</div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">NBS</div><div class="name">N-Bromosuccinimide</div></div>
+            <div class="tag" style="background:#3eb6c7">Radical</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Provides low, steady conc. of Br₂ → favours allylic/benzylic substitution (radical) over addition</li></ul>
+            <div class="rxn-row"><div class="rxn-box">CH₂=CH–CH₃</div><div class="rxn-arrow"><div class="top">NBS, hv</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">CH₂=CH–CH₂Br</div></div>
+          </div></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================= ELIMINATION ========================= -->
+    <section class="block" id="elimination" data-sec>
+      <div class="block-head"><div class="ic" style="background:#4f7cff">➖</div><div><h2>Elimination &amp; Basic Substitution</h2><p>Alkyl halide reactivity with bases/nucleophiles</p></div></div>
+      <div class="grid">
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">alc. KOH</div><div class="name">Dehydrohalogenation (E2)</div></div>
+            <div class="tag" style="background:#4f7cff">Elimination</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Removes HX from alkyl halide to give alkene — Zaitsev's (more substituted) product major</li></ul>
+            <div class="sub-title">Drawn Mechanism — Concerted E2</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 260 150" width="250" height="145">
+                  <text x="10" y="95" font-size="14">⁻OEt</text>
+                  <line x1="90" y1="100" x2="140" y2="100" stroke="#2b2d42" stroke-width="1.8"/>
+                  <line x1="140" y1="100" x2="190" y2="100" stroke="#2b2d42" stroke-width="1.8"/>
+                  <text x="135" y="118" font-size="13">H</text><text x="195" y="104" font-size="13">X</text>
+                  <text x="85" y="104" font-size="13">Cβ</text><text x="140" y="90" font-size="12">Cα</text>
+                  <path d="M35,90 Q70,75 88,98" stroke="#4f7cff" stroke-width="2.2" fill="none" marker-end="url(#arrowBlue)"/>
+                  <path d="M120,98 Q130,85 148,98" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M165,100 Q180,90 195,98" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Base removes anti-periplanar β-H as C=C forms &amp; leaving group departs simultaneously — one concerted step.</div>
+              </div>
+              <div class="mech-sep">➜</div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;">Alkene + EtOH + X⁻</div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">aq. KOH/NaOH</div><div class="name">Nucleophilic Substitution</div></div>
+            <div class="tag" style="background:#4f7cff">SN1/SN2</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Aqueous (nucleophilic, polar protic) medium favours substitution over elimination — alkyl halide → alcohol</li></ul>
+            <div class="rxn-row"><div class="rxn-box">R–X</div><div class="rxn-arrow"><div class="top">aq. KOH</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">R–OH</div></div>
+          </div></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================= NAME REACTIONS ========================= -->
+    <section class="block" id="condensation" data-sec>
+      <div class="block-head"><div class="ic" style="background:#f0a93e">🔗</div><div><h2>Name Reactions &amp; Condensations</h2><p>Classic carbonyl / aromatic transformations</p></div></div>
+      <div class="grid">
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">dil. NaOH</div><div class="name">Aldol Condensation</div></div>
+            <div class="tag" style="background:#f0a93e">Name Reaction</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Carbonyl compounds with α-H self-condense → β-hydroxy carbonyl (aldol) → dehydrates to α,β-unsaturated carbonyl</li></ul>
+            <div class="sub-title">Drawn Mechanism</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="15" y="95" font-size="14">⁻OH</text>
+                  <text x="110" y="95" font-size="14">H–CH₂–CHO</text>
+                  <path d="M45,90 Q70,70 108,90" stroke="#4f7cff" stroke-width="2.2" fill="none" marker-end="url(#arrowBlue)"/>
+                  <path d="M135,88 Q145,70 160,80" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Base removes α-H forming a resonance-stabilised enolate ion.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">attacks 2nd carbonyl</span></div>
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="10" y="95" font-size="13">⁻CH₂CHO</text>
+                  <text x="130" y="60" font-size="13">O=CH–CH₃</text>
+                  <path d="M70,90 Q100,70 128,65" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M150,58 Q165,45 155,35" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Enolate carbon attacks the second carbonyl — forms alkoxide (aldol) intermediate.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">−H₂O (E1cb)</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700; font-size:14px;">CH₃–CH=CH–CHO<br><span style="font-weight:400;font-size:11px;color:#6b7089">crotonaldehyde</span></div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">conc. NaOH</div><div class="name">Cannizzaro Reaction</div></div>
+            <div class="tag" style="background:#f0a93e">Name Reaction</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Aldehydes with <b>no α-H</b> (e.g. HCHO, C₆H₅CHO) self-disproportionate: one is oxidised to acid, the other reduced to alcohol</li></ul>
+            <div class="sub-title">Drawn Mechanism</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="20" y="95" font-size="14">⁻OH</text>
+                  <text x="130" y="60" font-size="14">PhCHO</text>
+                  <path d="M50,90 Q90,65 128,62" stroke="#4f7cff" stroke-width="2.2" fill="none" marker-end="url(#arrowBlue)"/>
+                  <path d="M160,58 Q172,45 162,35" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">OH⁻ attacks one aldehyde's carbonyl carbon → tetrahedral alkoxide intermediate.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">hydride transfer</span></div>
+              <div class="mech-frame">
+                <svg viewBox="0 0 240 150" width="230" height="145">
+                  <text x="10" y="90" font-size="12">Ph–CH(OH)(O⁻)</text>
+                  <text x="150" y="55" font-size="13">PhCHO</text>
+                  <path d="M90,85 Q130,55 148,52" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <path d="M170,50 Q182,38 172,30" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">C–H of the intermediate transfers as hydride to the second aldehyde's carbon.</div>
+              </div>
+              <div class="mech-sep">➜</div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700; font-size:13px;">PhCOO⁻ + PhCH₂OH</div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">AlCl₃ / RCOCl</div><div class="name">Friedel–Crafts Reaction</div></div>
+            <div class="tag" style="background:#f0a93e">EAS</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Alkylation (RX/AlCl₃) or Acylation (RCOCl/AlCl₃) of benzene; acylation preferred — avoids polyalkylation/rearrangement</li></ul>
+            <div class="sub-title">Drawn Mechanism — Electrophilic Aromatic Substitution</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 220 140" width="210" height="135">
+                  <text x="10" y="70" font-size="13">R–C(=O)–Cl</text>
+                  <text x="140" y="40" font-size="13">AlCl₃</text>
+                  <path d="M90,65 Q115,50 138,42" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">AlCl₃ pulls Cl⁻ away, generating the electrophilic acylium ion R–C≡O⁺.</div>
+              </div>
+              <div class="mech-sep">➜</div>
+              <div class="mech-frame">
+                <svg viewBox="0 0 220 140" width="210" height="135">
+                  <polygon points="60,30 100,30 120,65 100,100 60,100 40,65" fill="none" stroke="#2b2d42" stroke-width="1.8"/>
+                  <circle cx="80" cy="65" r="22" fill="none" stroke="#2b2d42" stroke-dasharray="2,2"/>
+                  <text x="140" y="45" font-size="13">R–C≡O⁺</text>
+                  <path d="M105,40 Q125,35 137,42" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <text x="130" y="95" font-size="12" fill="#e8604c">arenium ion (δ+ on ring)</text>
+                </svg>
+                <div class="mech-caption">Ring π electrons attack acylium carbon → resonance-stabilised arenium ion (loses aromaticity briefly).</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">−H⁺</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;">C₆H₅COR <span style="font-size:11px;color:#6b7089;font-weight:400;">(+ AlCl₃ regenerated)</span></div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">CHCl₃ / NaOH</div><div class="name">Reimer–Tiemann Reaction</div></div>
+            <div class="tag" style="background:#f0a93e">Name Reaction</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Converts phenol → salicylaldehyde (ortho –CHO) via a dichlorocarbene electrophile</li></ul>
+            <div class="sub-title">Drawn Mechanism</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 220 140" width="210" height="135">
+                  <text x="20" y="80" font-size="14">⁻OH + CHCl₃</text>
+                  <path d="M80,75 Q100,60 115,70" stroke="#4f7cff" stroke-width="2.2" fill="none" marker-end="url(#arrowBlue)"/>
+                  <path d="M140,60 Q155,45 148,35" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                  <text x="130" y="30" font-size="12">:CCl₂</text>
+                </svg>
+                <div class="mech-caption">OH⁻ removes the acidic H of CHCl₃; α-elimination of Cl⁻ gives electrophilic dichlorocarbene.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">ortho attack</span></div>
+              <div class="mech-frame">
+                <svg viewBox="0 0 220 140" width="210" height="135">
+                  <polygon points="60,30 100,30 120,65 100,100 60,100 40,65" fill="none" stroke="#2b2d42" stroke-width="1.8"/>
+                  <text x="65" y="20" font-size="12">O⁻</text>
+                  <text x="135" y="55" font-size="12">:CCl₂</text>
+                  <path d="M100,45 Q120,50 133,55" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Electron-rich phenoxide ring (ortho position) attacks the carbene carbon.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">hydrolysis</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;font-size:13px;">salicylaldehyde</div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">NaOH, CO₂</div><div class="name">Kolbe's Reaction</div></div>
+            <div class="tag" style="background:#f0a93e">Name Reaction</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Sodium phenoxide + CO₂ (4-7 atm, 125°C) → ortho-carboxylation → salicylic acid on acidification</li></ul>
+            <div class="rxn-row"><div class="rxn-box">C₆H₅ONa</div><div class="rxn-arrow"><div class="top">CO₂, Δ, press.</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">salicylic acid</div></div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">Br₂ / NaOH</div><div class="name">Hofmann Bromamide Degradation</div></div>
+            <div class="tag" style="background:#f0a93e">Name Reaction</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>1° amide → 1° amine with <b>one carbon less</b> via nitrene/isocyanate rearrangement</li></ul>
+            <div class="rxn-row"><div class="rxn-box">RCONH₂</div><div class="rxn-arrow"><div class="top">Br₂/NaOH</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">R–N=C=O</div><div class="rxn-arrow"><div class="top">H₂O</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">RNH₂</div></div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">H⁺ / ROH</div><div class="name">Fischer Esterification</div></div>
+            <div class="tag" style="background:#f0a93e">Acyl Substitution</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Acid + alcohol ⇌ ester + water (reversible, acid-catalysed)</li></ul>
+            <div class="sub-title">Drawn Mechanism</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 220 140" width="210" height="135">
+                  <text x="60" y="70" font-size="14">R–C(=O)–OH</text>
+                  <text x="30" y="30" font-size="12">H⁺</text>
+                  <path d="M45,32 Q70,35 90,45" stroke="#4f7cff" stroke-width="2.2" fill="none" marker-end="url(#arrowBlue)"/>
+                </svg>
+                <div class="mech-caption">H⁺ protonates carbonyl O, boosting electrophilicity of carbon.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">R'OH attacks</span></div>
+              <div class="mech-frame">
+                <svg viewBox="0 0 220 140" width="210" height="135">
+                  <text x="10" y="80" font-size="13">R'–OH</text>
+                  <text x="110" y="70" font-size="13">C=OH⁺</text>
+                  <path d="M55,75 Q85,65 108,68" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">Alcohol oxygen attacks the electrophilic carbon → tetrahedral intermediate.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">−H₂O, −H⁺</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;">R–COOR' + H₂O</div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+        <div class="card" data-card>
+          <div class="card-head" data-toggle>
+            <div><div class="formula">NaNO₂/HCl, CuX</div><div class="name">Diazonium Salt &amp; Sandmeyer/Gattermann</div></div>
+            <div class="tag" style="background:#f0a93e">Name Reaction</div><div class="chev">▾</div>
+          </div>
+          <div class="wrap"><div class="wrap-inner"><div class="card-body">
+            <ul class="uses"><li>Aniline → benzenediazonium chloride at 0–5°C (diazotization)</li><li>Sandmeyer (CuCl/CuBr/CuCN) or Gattermann (Cu powder) replaces N₂⁺ with –Cl, –Br or –CN</li></ul>
+            <div class="sub-title">Drawn Mechanism (overview)</div>
+            <div class="mech-strip">
+              <div class="mech-frame">
+                <svg viewBox="0 0 220 140" width="210" height="135">
+                  <text x="20" y="70" font-size="14">Ar–NH₂</text>
+                  <text x="120" y="40" font-size="13">N≡O⁺</text>
+                  <path d="M65,65 Q95,50 118,42" stroke="#e8604c" stroke-width="2.2" fill="none" marker-end="url(#arrowRed)"/>
+                </svg>
+                <div class="mech-caption">–NH₂ attacks nitrosonium ion (from NaNO₂/HCl) → after dehydration gives diazonium ion.</div>
+              </div>
+              <div class="mech-sep">➜<span class="lbl">CuCl, Δ</span></div>
+              <div class="mech-frame" style="display:flex;align-items:center;justify-content:center;"><div style="font-weight:700;">Ar–Cl + N₂↑</div></div>
+            </div>
+          </div></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================= TESTS ========================= -->
+    <section class="block" id="tests" data-sec>
+      <div class="block-head"><div class="ic" style="background:#9b7bf0">🧪</div><div><h2>Identification / Color Tests</h2><p>No arrow-pushing mechanism needed — just reagent, observation &amp; equation</p></div></div>
+      <div class="grid">
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">Tollens' Reagent</div><div class="name">Ammoniacal AgNO₃</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>Aldehydes give a bright <b>silver mirror</b> (Ag⁺ → Ag); ketones do not react</li></ul>
+        <div class="rxn-row"><div class="rxn-box">RCHO</div><div class="rxn-arrow"><div class="top">Tollens'</div><svg viewBox="0 0 56 12"><line x1="2" y1="6" x2="48" y2="6" stroke-width="2" stroke="#2b2d42" marker-end="url(#arrowRed)"/></svg></div><div class="rxn-box">RCOO⁻ + Ag↓(mirror)</div></div>
+        </div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">Fehling's Solution</div><div class="name">Cu²⁺–tartrate complex</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>Aliphatic aldehydes give brick-red Cu₂O precipitate; aromatic aldehydes do not respond</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">2,4-DNP</div><div class="name">Brady's Reagent</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>General test for <b>any</b> carbonyl (aldehyde or ketone) → yellow/orange hydrazone precipitate</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">Lucas Reagent</div><div class="name">conc. HCl + ZnCl₂</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>Distinguishes 1°/2°/3° alcohols by turbidity speed: 3° instant, 2° few minutes, 1° no reaction at RT</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">Hinsberg's Reagent</div><div class="name">C₆H₅SO₂Cl</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>1° amine → soluble sulfonamide (salt); 2° amine → insoluble precipitate; 3° amine → no reaction</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">I₂ / NaOH</div><div class="name">Iodoform Test</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>Detects CH₃CO– group or CH₃CH(OH)– → yellow CHI₃ precipitate</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">Baeyer's Reagent</div><div class="name">cold dil. alk. KMnO₄</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>Tests unsaturation — pink color decolourises as alkene forms a diol</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">Br₂ water</div><div class="name">Bromine Water Test</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>Decolourises with alkenes/alkynes (addition); phenol gives white 2,4,6-tribromophenol precipitate</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">Ceric Ammonium Nitrate</div><div class="name">CAN Test</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>Alcohols give a red colour — confirms –OH group</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">Ninhydrin</div><div class="name">Ninhydrin Test</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>Amino acids give a purple/blue colour</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">CHCl₃/alc. KOH</div><div class="name">Carbylamine Test</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>1° amines give a foul-smelling isocyanide (carbylamine); 2°/3° amines give no reaction</li></ul></div></div></div></div>
+
+        <div class="card" data-card><div class="card-head" data-toggle><div><div class="formula">FeCl₃</div><div class="name">Ferric Chloride Test</div></div><div class="tag" style="background:#9b7bf0">Test</div><div class="chev">▾</div></div>
+        <div class="wrap"><div class="wrap-inner"><div class="card-body"><ul class="uses"><li>Phenols give a characteristic violet/purple colouration</li></ul></div></div></div></div>
+
+      </div>
+    </section>
+
+    <!-- ========================= REVISION TABLE ========================= -->
+    <section class="block" id="revision" data-sec>
+      <div class="block-head"><div class="ic" style="background:#3fb087">📋</div><div><h2>Quick Revision Table</h2><p>Every reagent at a glance — perfect for last-minute revision</p></div></div>
+      <div class="table-wrap">
+        <table id="revisionTable">
+          <thead><tr><th>Reagent</th><th>Category</th><th>One-line Use</th></tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>Made with care for JEE aspirants 💙 — Always cross-check mechanisms with your NCERT &amp; coaching material before exams.</footer>
+  </main>
+</div>
+
+<div class="fab" id="fab">↑</div>
+
+<script>
+// ---------- Sidebar nav active state + smooth scroll ----------
+const navLinks = document.querySelectorAll('.nav-link');
+navLinks.forEach(link=>{
+  link.addEventListener('click', ()=>{
+    const id = link.dataset.target;
+    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+    document.getElementById('sidebar').classList.remove('show');
+  });
+});
+const sections = document.querySelectorAll('[data-sec], .hero');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const id = entry.target.id;
+      navLinks.forEach(l=>l.classList.toggle('active', l.dataset.target===id));
+    }
+  });
+},{rootMargin:'-40% 0px -50% 0px'});
+sections.forEach(s=>observer.observe(s));
+
+// ---------- Card expand/collapse ----------
+document.querySelectorAll('[data-toggle]').forEach(head=>{
+  head.addEventListener('click', ()=>{
+    head.closest('.card').classList.toggle('open');
+  });
+});
+
+// ---------- Mobile menu ----------
+document.getElementById('menuBtn').addEventListener('click', ()=>{
+  document.getElementById('sidebar').classList.toggle('show');
+});
+
+// ---------- Search filter ----------
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', ()=>{
+  const q = searchInput.value.trim().toLowerCase();
+  document.querySelectorAll('[data-card]').forEach(card=>{
+    const match = card.innerText.toLowerCase().includes(q);
+    card.style.display = match ? '' : 'none';
+  });
+  document.querySelectorAll('[data-sec]').forEach(sec=>{
+    const visible = [...sec.querySelectorAll('[data-card]')].some(c=>c.style.display!=='none');
+    sec.style.display = (q==='' || visible) ? '' : 'none';
+  });
+  filterTable(q);
+});
+
+// ---------- Scroll to top fab ----------
+window.addEventListener('scroll', ()=>{
+  document.getElementById('fab').classList.toggle('show', window.scrollY>500);
+});
+document.getElementById('fab').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+// ---------- Revision table data ----------
+const data = [
+ ["LiAlH₄","Reduction","Reduces acids, esters, amides, nitriles, aldehydes & ketones to alcohols/amines"],
+ ["NaBH₄","Reduction","Mild — reduces only aldehydes & ketones to alcohols"],
+ ["DIBAL-H","Reduction","Partially reduces esters/nitriles to aldehydes at −78°C"],
+ ["Zn-Hg/HCl","Reduction","Clemmensen: C=O → CH₂ (acid-stable substrates)"],
+ ["NH₂NH₂/KOH","Reduction","Wolff–Kishner: C=O → CH₂ (base-stable substrates)"],
+ ["H₂/Lindlar's catalyst","Reduction","Alkyne → cis-alkene (partial hydrogenation)"],
+ ["H₂/Pd,Pt,Ni","Reduction","Complete hydrogenation of C=C/C≡C to alkane"],
+ ["KMnO₄","Oxidation","Oxidises alcohols, alkenes, alkylbenzenes — strong oxidant"],
+ ["K₂Cr₂O₇/H₂SO₄","Oxidation","1° alcohol → acid; 2° alcohol → ketone"],
+ ["PCC","Oxidation","1° alcohol → aldehyde only (mild, anhydrous)"],
+ ["O₃/Zn,H₂O","Oxidation","Ozonolysis — cleaves C=C to carbonyls"],
+ ["RMgX (Grignard)","Organometallic","Nucleophilic addition to carbonyls, CO₂, esters"],
+ ["Ph₃P=CHR (Wittig)","Organometallic","Converts carbonyl to alkene"],
+ ["SOCl₂","Substitution","Alcohol → alkyl chloride (clean, gaseous by-products)"],
+ ["PCl₅/PCl₃","Substitution","–OH → –Cl in alcohols/acids"],
+ ["X₂/Red P (HVZ)","Substitution","α-halogenation of carboxylic acids"],
+ ["NBS","Substitution","Allylic/benzylic bromination (radical)"],
+ ["alc. KOH","Elimination","Dehydrohalogenation (E2) → alkene"],
+ ["aq. KOH/NaOH","Substitution","Alkyl halide → alcohol"],
+ ["dil. NaOH","Name Reaction","Aldol condensation of carbonyls with α-H"],
+ ["conc. NaOH","Name Reaction","Cannizzaro — disproportionation of non-α-H aldehydes"],
+ ["AlCl₃/RX or RCOCl","Name Reaction","Friedel–Crafts alkylation/acylation of benzene"],
+ ["CHCl₃/NaOH","Name Reaction","Reimer–Tiemann: phenol → salicylaldehyde"],
+ ["NaOH/CO₂","Name Reaction","Kolbe's reaction: phenol → salicylic acid"],
+ ["Br₂/NaOH","Name Reaction","Hofmann bromamide degradation: amide → amine (−1 C)"],
+ ["conc. H₂SO₄/ROH","Name Reaction","Fischer esterification: acid + alcohol ⇌ ester"],
+ ["NaNO₂/HCl, 0–5°C","Name Reaction","Diazotization of aniline → diazonium salt"],
+ ["CuCl/CuBr/CuCN","Name Reaction","Sandmeyer reaction on diazonium salts"],
+ ["Cu/HX","Name Reaction","Gattermann reaction (alternative to Sandmeyer)"],
+ ["NaNH₂","Base/Nucleophile","Strong base; makes terminal alkynide ions"],
+ ["NaOEt","Base/Nucleophile","Base for E2 elimination & enolate formation"],
+ ["KCN/NaCN","Nucleophile","SN2 with alkyl halides → nitriles (chain extension)"],
+ ["Tollens' Reagent","Test","Silver mirror with aldehydes"],
+ ["Fehling's Solution","Test","Brick-red ppt with aliphatic aldehydes"],
+ ["2,4-DNP","Test","Yellow/orange ppt with any carbonyl"],
+ ["Lucas Reagent","Test","Distinguishes 1°/2°/3° alcohols"],
+ ["Hinsberg's Reagent","Test","Distinguishes 1°/2°/3° amines"],
+ ["I₂/NaOH","Test","Iodoform test for CH₃CO–/CH₃CH(OH)–"],
+ ["Baeyer's Reagent","Test","Tests unsaturation (decolourises)"],
+ ["Br₂ water","Test","Unsaturation / phenol test"],
+ ["Ceric Ammonium Nitrate","Test","Red colour confirms –OH"],
+ ["Ninhydrin","Test","Purple colour with amino acids"],
+ ["CHCl₃/alc. KOH","Test","Carbylamine test for 1° amines"],
+ ["FeCl₃","Test","Violet colour with phenols"],
+];
+const tbody = document.getElementById('tableBody');
+function renderTable(rows){
+  tbody.innerHTML = rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+}
+renderTable(data);
+function filterTable(q){
+  if(!q){ renderTable(data); return; }
+  renderTable(data.filter(r=>r.join(' ').toLowerCase().includes(q)));
+}
+</script>
+</body>
+</html>
